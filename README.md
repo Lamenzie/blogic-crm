@@ -1,54 +1,60 @@
-# React + TypeScript + Vite
+# Blogic CRM – React aplikace pro správu smluv
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tato aplikace slouží pro správu smluv, klientů a poradců v rámci jednoduchého CRM systému. Umožňuje evidenci základních údajů, přehledné zobrazení a správu jednotlivých entit, včetně propojování mezi smlouvami, klienty a poradci. Aplikace byla vytvořena jako ukázkový projekt v rámci zadání pro IT stáž.
 
-Currently, two official plugins are available:
+## Hlavní funkce
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Zobrazení seznamu smluv, klientů a poradců
+- Proklik na detail propojených entit (např. klient ve smlouvě)
+- Možnost vytvářet, upravovat a mazat záznamy (CRUD operace)
+- Vyhledávání podle jména, příjmení, evidence apod.
+- Validace vstupních údajů a vstupních typů
+- Responzivní design (mobil/tablet/desktop)
+- Zabezpečené mazání smluv (ověření správce)
 
-## Expanding the ESLint configuration
+## Použité technologie
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- React + TypeScript
+- React Router DOM
+- Tailwind CSS (včetně vlastní barevné palety)
+- Context API pro správu stavu (klienti, poradci, smlouvy)
+- Vite jako dev/bundler
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Spuštění projektu
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Naklonujte repozitář:
+git clone https://github.com/uzivatel/blogic-crm.git
+cd blogic-crm
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2. Instalace závislostí:
+npm install
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+3. Spuštění vývojového serveru:
+npm run dev
+
+Aplikace bude dostupná na adrese "http://localhost:xxxx". (např. http://localhost:5173)
+
+## Struktura projektu
+src/
+├── components/ // Layout komponenty (např. Sidebar)
+├── pages/
+│ ├── Contracts/ // Smlouvy – list, detail, formulář
+│ ├── Clients/ // Klienti – list, detail, formulář
+│ └── Advisors/ // Poradci – list, detail, formulář
+├── models/ // Typové definice (TS)
+├── App.tsx // Hlavní routovací logika
+├── main.tsx // Bootstrap aplikace
+└── index.css // Tailwind CSS
+
+## Zabezpečené mazání smluv
+
+Smazání smlouvy je chráněno proti náhodnému nebo neoprávněnému zásahu. Uživatel musí zadat:
+
+- **Rodné číslo správce smlouvy**, který je přidělen ve smlouvě
+- **Heslo:** `heslo123`
+
+Pouze pokud obě hodnoty souhlasí, je smazání smlouvy umožněno. V opačném případě je akce zablokována s upozorněním.
+
+## Licence
+
+Projekt je určen výhradně pro demonstrační účely. Zdrojový kód může být volně použit nebo upraven pro nekomerční potřeby.
