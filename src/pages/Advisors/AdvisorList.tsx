@@ -1,58 +1,79 @@
-// src/pages/Advisors/AdvisorList.tsx
 import { useAdvisors } from "./AdvisorContext";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const AdvisorList = () => {
   const { advisors } = useAdvisors();
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredAdvisors = advisors.filter((advisor) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      advisor.firstName.toLowerCase().includes(term) ||
+      advisor.lastName.toLowerCase().includes(term)
+    );
+  });
 
   return (
-    <div className="pt-24 px-8 min-h-screen bg-gradient-to-br from-[#BFcad9] to-[#748cab]">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-[#0D1321] tracking-tight">Poradci</h1>
+    <div className="p-6 bg-white rounded shadow-md">
+      {/* Hlavička a akce */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-darkBlue">Poradci</h1>
         <button
-          onClick={() => {}}
-          className="bg-[#2E455D] text-white px-6 py-3 rounded-lg hover:bg-[#1D2D44] shadow-lg transition-all duration-200 font-medium"
+          onClick={() => navigate("/poradci/novy")}
+          className="bg-steelBlue text-white px-5 py-2 rounded hover:bg-darkBlue transition"
         >
           + Nový poradce
         </button>
       </div>
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-[#748cab]/20">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gradient-to-r from-[#0D1321] to-[#152033] text-[#FFFFFF]">
-                <th className="px-6 py-4 text-left font-semibold tracking-wide">Jméno</th>
-                <th className="px-6 py-4 text-left font-semibold tracking-wide">E-mail</th>
-                <th className="px-6 py-4 text-left font-semibold tracking-wide">Telefon</th>
-                <th className="px-6 py-4 text-left font-semibold tracking-wide">Rodné číslo</th>
+      {/* Vyhledávání */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Vyhledat poradce..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-steelBlue transition"
+        />
+      </div>
+
+      {/* Tabulka */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-base">
+          <thead className="bg-grayBlue text-white">
+            <tr>
+              <th className="p-3">Jméno</th>
+              <th className="p-3">Detail</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-800">
+            {filteredAdvisors.map((advisor) => (
+              <tr
+                key={advisor.id}
+                className="hover:bg-gray-100 transition cursor-pointer"
+              >
+                <td className="p-3">{advisor.firstName} {advisor.lastName}</td>
+                <td className="p-3">
+                  <button
+                    onClick={() => navigate(`/poradci/${advisor.id}`)}
+                    className="text-steelBlue hover:text-darkBlue transition"
+                  >
+                    →
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {advisors.map((advisor, index) => (
-                <tr
-                  key={advisor.id}
-                  className={`border-b border-[#748cab]/20 hover:bg-[#BFcad9]/30 transition-colors duration-150 ${
-                    index % 2 === 0 ? "bg-white/50" : "bg-[#BFcad9]/10"
-                  }`}
-                >
-                  <td className="px-6 py-4 font-medium text-[#0D1321]">
-                    {advisor.firstName} {advisor.lastName}
-                  </td>
-                  <td className="px-6 py-4 text-[#152033]">{advisor.email}</td>
-                  <td className="px-6 py-4 text-[#152033]">{advisor.phone}</td>
-                  <td className="px-6 py-4 text-[#152033]">{advisor.birthNumber}</td>
-                </tr>
-              ))}
-              {advisors.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-[#748cab]">
-                    Žádní poradci nebyli nalezeni
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            ))}
+            {filteredAdvisors.length === 0 && (
+              <tr>
+                <td className="p-3 italic text-gray-500" colSpan={2}>
+                  Žádní poradci neodpovídají hledání
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

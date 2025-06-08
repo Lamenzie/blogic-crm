@@ -1,76 +1,83 @@
 import { useNavigate } from 'react-router-dom';
 import { useContracts } from './ContractContext';
+import { useState } from 'react';
 
 const ContractList = () => {
   const { contracts } = useContracts();
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredContracts = contracts.filter((contract) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      contract.evidenceNumber.toLowerCase().includes(term) ||
+      contract.institution.toLowerCase().includes(term)
+    );
+  });
 
   return (
-    <div className="ml-64 min-h-screen bg-gradient-to-br from-[#BFcad9] to-[#748cab]">
-      <div className="p-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-[#0D1321] tracking-tight">Smlouvy</h1>
-          <button
-            onClick={() => navigate('/smlouvy/novy')}
-            className="bg-[#2E455D] text-white px-6 py-3 rounded-lg hover:bg-[#1D2D44] shadow-lg transition-all duration-200 font-medium"
-          >
-            + Nová smlouva
-          </button>
-        </div>
+    <div className="p-6 bg-white rounded shadow-md">
+      {/* Hlavička */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-darkBlue">Seznam smluv</h1>
+        <button
+          onClick={() => navigate('/smlouvy/novy')}
+          className="bg-steelBlue text-white px-5 py-2 rounded hover:bg-darkBlue transition"
+        >
+          + Nová smlouva
+        </button>
+      </div>
 
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Vyhledat smlouvy..."
-            className="w-5/12 max-w-md px-4 py-3 border-2 border-[#748cab] rounded-lg bg-white/90 backdrop-blur-sm focus:outline-none focus:border-[#3E5C76] focus:bg-white transition-all duration-200 placeholder-[#748cab]"
-          />
-        </div>
+      {/* Vyhledávání */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Vyhledat smlouvy..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-steelBlue transition"
+        />
+      </div>
 
-        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-[#748cab]/20">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gradient-to-r from-[#0D1321] to-[#152033] text-[#FFFFFF]">
-                  <th className="px-6 py-4 text-left font-semibold tracking-wide">Evidenční číslo</th>
-                  <th className="px-6 py-4 text-left font-semibold tracking-wide">Instituce</th>
-                  <th className="px-6 py-4 text-left font-semibold tracking-wide">Datum uzavření</th>
-                  <th className="px-6 py-4 text-left font-semibold tracking-wide">Platnost do</th>
-                  <th className="px-6 py-4 text-center font-semibold tracking-wide">Detail</th>
-                </tr>
-              </thead>
-              <tbody>
-                {contracts.map((contract, index) => (
-                  <tr 
-                    key={contract.id} 
-                    className={`border-b border-[#748cab]/20 hover:bg-[#BFcad9]/30 transition-colors duration-150 ${
-                      index % 2 === 0 ? 'bg-white/50' : 'bg-[#BFcad9]/10'
-                    }`}
+      {/* Tabulka */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-base border-collapse">
+          <thead className="bg-grayBlue text-white">
+            <tr>
+              <th className="p-3">Evidenční číslo</th>
+              <th className="p-3">Instituce</th>
+              <th className="p-3">Platnost do</th>
+              <th className="p-3">Detail</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-800">
+            {filteredContracts.map((contract) => (
+              <tr
+                key={contract.id}
+                className="hover:bg-gray-100 transition cursor-pointer"
+              >
+                <td className="p-3">{contract.evidenceNumber}</td>
+                <td className="p-3">{contract.institution}</td>
+                <td className="p-3">{contract.validUntil || '—'}</td>
+                <td className="p-3">
+                  <button
+                    onClick={() => navigate(`/smlouvy/${contract.id}`)}
+                    className="text-steelBlue hover:text-darkBlue transition"
                   >
-                    <td className="px-6 py-4 font-medium text-[#0D1321]">{contract.evidenceNumber}</td>
-                    <td className="px-6 py-4 text-[#152033]">{contract.institution}</td>
-                    <td className="px-6 py-4 text-[#152033]">{contract.startDate}</td>
-                    <td className="px-6 py-4 text-[#152033]">{contract.validUntil}</td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => navigate(`/smlouvy/${contract.id}`)}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#3E5C76] text-white hover:bg-[#2E455D] transition-colors duration-150 shadow-md"
-                      >
-                        →
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {contracts.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-[#748cab]">
-                      Žádné smlouvy nebyly nalezeny
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                    →
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {filteredContracts.length === 0 && (
+              <tr>
+                <td className="p-3 italic text-gray-500" colSpan={6}>
+                  Žádné smlouvy neodpovídají hledání
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
