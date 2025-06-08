@@ -36,15 +36,15 @@ Aplikace bude dostupná na adrese "http://localhost:xxxx". (např. http://localh
 
 ## Struktura projektu
 src/
-├── components/ // Layout komponenty (např. Sidebar)
+├── components/ # Layout komponenty (např. Sidebar)
 ├── pages/
-│ ├── Contracts/ // Smlouvy – list, detail, formulář
-│ ├── Clients/ // Klienti – list, detail, formulář
-│ └── Advisors/ // Poradci – list, detail, formulář
-├── models/ // Typové definice (TS)
-├── App.tsx // Hlavní routovací logika
-├── main.tsx // Bootstrap aplikace
-└── index.css // Tailwind CSS
+│ ├── Contracts/ # Smlouvy – seznam, detail, formulář
+│ ├── Clients/ # Klienti – seznam, detail, formulář
+│ └── Advisors/ # Poradci – seznam, detail, formulář
+├── models/ # Typové definice (TypeScript)
+├── App.tsx # Hlavní routování a rozložení
+├── main.tsx # Inicializace aplikace (ReactDOM)
+└── index.css # Tailwind styly (včetně direktiv)
 
 ## Zabezpečené mazání smluv
 
